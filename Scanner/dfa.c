@@ -1,7 +1,46 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "states.h"
 
+struct dfa* makeDFA(int numstates){
+    struct dfa* retDFA = (struct dfa*)malloc(sizeof(struct dfa));
+    retDFA->numstates = numstates;
+    retDFA->states = (struct states*)malloc(sizeof(struct state) * numstates);
+    struct state* iterator = (struct state*)retDFA->states;
+    for(int i = 0; i < numstates; i++){
+        struct state* iterator = retDFA->states + i;
+        iterator->id = i;
+        iterator->numTrans = 0;
+        iterator->transitions = NULL;
+    }
+    retDFA->cur = 0;
+    return retDFA;
+}
 
-state* transition(state* cur, int next){
+void addTrans(struct state* target, struct state* next, int let){
+    if(target->numTrans == 0){
+        target->transitions = (struct transition*)malloc(sizeof(struct transition));
+        target->transitions->let = let;
+        target->transitions->next = next;
+        target->numTrans = 1;
+    }
+    else{
+        target->numTrans = target-> numTrans + 1;
+        target->transitions = realloc(target->transitions, target->numTrans * sizeof(struct transition));
+        struct transition* new = target->transitions + (target->numTrans - 1);
+        new->let = let;
+        new->next = next;
+    }
+}
 
+void transition(struct dfa* cur, int let){
+    struct state* curr = cur->states + cur->cur;
+    for(int i = 0; i < curr->numTrans; i++){
+        struct transition* iterator = curr->transitions + i;
+        if (iterator->let == let){
+            cur->cur = iterator->next->id;
+            break;
+        }
+    }
+    exit(1);
 }
