@@ -11,6 +11,7 @@ struct dfa* makeDFA(int numstates){
         struct state* iterator = retDFA->states + i;
         iterator->id = i;
         iterator->numTrans = 0;
+        iterator->final = 0;
         iterator->transitions = NULL;
     }
     retDFA->cur = 0;
@@ -31,6 +32,21 @@ void addTrans(struct state* target, struct state* next, int let){
         new->let = let;
         new->next = next;
     }
+}
+
+void makeFinal(struct dfa* cur, int id){
+    struct state* curr = cur->states + id;
+    curr->final = 1;
+}
+
+int isFinal(struct dfa* cur, int id){
+    struct state* curr = cur->states + id;
+    return curr->final;
+}
+
+void printCurr(struct dfa* cur){
+    struct state* curr = cur->states + cur->cur;
+    printf("State: %d \n Final: %d", curr->id, curr->final);
 }
 
 void transition(struct dfa* cur, int let){

@@ -1,9 +1,3 @@
-enum chars{
-    DIG, SPC, OP, NLN, EDOF
-};
-
-int tranSize = 10;
-
 struct transition{
     int let;
     struct state* next;
@@ -25,5 +19,11 @@ struct dfa{
 struct dfa* makeDFA(int numstates);
 
 void addTrans(struct state* target, struct state* next, int let);
+
+void makeFinal(struct dfa* cur, int id);
+
+int isFinal(struct dfa* cur, int id);
+
+void printCurr(struct dfa* cur);
 
 void transition(struct dfa* cur, int let);
