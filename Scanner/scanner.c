@@ -46,7 +46,7 @@ void scan(FILE* input, FILE* output){
     addTrans(dfa1, 2, 0, SPC);
     int c;
     while((c = getNext(input)) != EOF){
-        int next = getNext(c);
+        int next = getChar(c);
         int curState = getCurr(dfa1);
         transition(dfa1, next);
         int nextState = getCurr(dfa1);
