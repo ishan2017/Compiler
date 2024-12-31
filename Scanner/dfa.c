@@ -27,7 +27,7 @@ void addTrans(struct state* target, struct state* next, int let){
     }
     else{
         target->numTrans = target-> numTrans + 1;
-        target->transitions = realloc(target->transitions, target->numTrans * sizeof(struct transition));
+        target->transitions = (struct transition*)realloc(target->transitions, target->numTrans * sizeof(struct transition));
         struct transition* new = target->transitions + (target->numTrans - 1);
         new->let = let;
         new->next = next;
