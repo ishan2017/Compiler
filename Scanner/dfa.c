@@ -18,7 +18,9 @@ struct dfa* makeDFA(int numstates){
     return retDFA;
 }
 
-void addTrans(struct state* target, struct state* next, int let){
+void addTrans(struct dfa* cur, int tar, int nxt, int let){
+    struct state* target = cur->states + tar;
+    struct state* next = cur->states + nxt;
     if(target->numTrans == 0){
         target->transitions = (struct transition*)malloc(sizeof(struct transition));
         target->transitions->let = let;
