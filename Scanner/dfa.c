@@ -5,7 +5,7 @@
 struct dfa* makeDFA(int numstates){
     struct dfa* retDFA = (struct dfa*)malloc(sizeof(struct dfa));
     retDFA->numstates = numstates;
-    retDFA->states = (struct states*)malloc(sizeof(struct state) * numstates);
+    retDFA->states = (struct state*)malloc(sizeof(struct state) * numstates);
     struct state* iterator = (struct state*)retDFA->states;
     for(int i = 0; i < numstates; i++){
         struct state* iterator = retDFA->states + i;
@@ -48,17 +48,21 @@ int isFinal(struct dfa* cur, int id){
 
 void printCurr(struct dfa* cur){
     struct state* curr = cur->states + cur->cur;
-    printf("State: %d \n Final: %d", curr->id, curr->final);
+    printf("State: %d \nFinal: %d\n", curr->id, curr->final);
 }
 
 void transition(struct dfa* cur, int let){
     struct state* curr = cur->states + cur->cur;
+    int flag = 1;
     for(int i = 0; i < curr->numTrans; i++){
         struct transition* iterator = curr->transitions + i;
         if (iterator->let == let){
             cur->cur = iterator->next->id;
+            flag = 0;
             break;
         }
     }
-    exit(1);
+    if(flag){
+        exit(1);
+    }
 }

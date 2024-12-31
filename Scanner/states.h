@@ -18,7 +18,7 @@ struct dfa{
 
 struct dfa* makeDFA(int numstates);
 
-void addTrans(struct state* target, struct state* next, int let);
+void addTrans(struct dfa* cur, int tar, int nxt, int let);
 
 void makeFinal(struct dfa* cur, int id);
 

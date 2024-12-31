@@ -3,10 +3,10 @@
 #include "states.h"
 #include "scan.h"
 
-char *getNext(FILE *fp){
+char *getNext(FILE* fp){
     
 }
 
-void scan(FILE * fp){
-    
+void scan(FILE* input, FILE* output){
+
 }
