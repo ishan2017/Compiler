@@ -24,6 +24,8 @@ void makeFinal(struct dfa* cur, int id);
 
 int isFinal(struct dfa* cur, int id);
 
+int getCurr(struct dfa* cur);
+
 void printCurr(struct dfa* cur);
 
-void transition(struct dfa* cur, int let);
+int transition(struct dfa* cur, int let);

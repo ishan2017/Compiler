@@ -1,5 +1,5 @@
 enum tokens{
-    ADD, SUB, MUL, DIV, EQ, INT
+    OPERATOR, INTEGER
 };
 
 enum chars{

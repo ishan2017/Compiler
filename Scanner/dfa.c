@@ -46,23 +46,23 @@ int isFinal(struct dfa* cur, int id){
     return curr->final;
 }
 
+int getCurr(struct dfa* cur){
+    return cur->cur;
+}
+
 void printCurr(struct dfa* cur){
     struct state* curr = cur->states + cur->cur;
     printf("State: %d \nFinal: %d\n", curr->id, curr->final);
 }
 
-void transition(struct dfa* cur, int let){
+int transition(struct dfa* cur, int let){
     struct state* curr = cur->states + cur->cur;
-    int flag = 1;
     for(int i = 0; i < curr->numTrans; i++){
         struct transition* iterator = curr->transitions + i;
         if (iterator->let == let){
             cur->cur = iterator->next->id;
-            flag = 0;
-            break;
+            return 0;
         }
     }
-    if(flag){
-        exit(1);
-    }
+    return 1;
 }
