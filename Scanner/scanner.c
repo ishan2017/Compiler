@@ -18,6 +18,9 @@ int getNext(FILE* fp){
 int skip(FILE *fp){
     int c = getNext(fp);
     while(' ' == c || '\n' == c || '\f' == c || '\r' == c || '\t' == c){
+        if(c == '\n'){
+            line++;
+        }
         c = getNext(fp);
     }
     return c;
@@ -58,24 +61,28 @@ void addToken(FILE* output, struct token* tok){
     fprintf(output, tok->print);
 }
 
-void scanIdn(FILE* input, struct dfa* idn){
-
+int scanIdn(FILE* input, struct dfa* idn){
+    idn->cur = 0;
 }
 
-void scanCnst(FILE* input, struct dfa* cnst){
+int scanCnst(FILE* input, struct dfa* cnst){
+    cnst->cur = 0;
+}
+
+int scanStr(FILE* input, struct dfa* str){
+    str->cur = 0;
+}
+
+int scanPunc(FILE* input){
     
 }
 
-void scanStr(FILE* input, struct dfa* str){
+int scanKey(FILE* input){
     
 }
 
-void scanPunc(FILE* input){
-    
-}
-
-void scanKey(FILE* input){
-    
+void error(){
+    printf("Syntax error on line: %d", line);
 }
 
 void scan(FILE* input, FILE* output){
@@ -118,5 +125,34 @@ void scan(FILE* input, FILE* output){
     addTrans(str, 1, 1, OTHR);
     addTrans(str, 1, 2, DQ);
     makeFinal(str, 2);
-
+    while(1){
+        char c = skip(input);
+        if(c == EOF){
+            break;
+        }
+        putback = c;
+        int flag = 0;
+        switch(getChar(c)){
+            case LET:
+                flag = scanKey(input);
+                if(!flag){
+                    break;
+                }
+            case UNDER:
+                flag = scanIdn(input, idn);
+                break;
+            case QT:
+                flag = scanCnst(input, cnst);
+                break;
+            case DQ:
+                flag = scanStr(input, str);
+                break;
+            case OP:
+                flag = scanPunc(input);
+                break;
+        }
+        if(flag){
+            error();
+        }
+    }
 }

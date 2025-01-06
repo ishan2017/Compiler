@@ -1,5 +1,7 @@
 int putback = 0;
 
+int line = 0;
+
 enum tokens{
     identifier, keyword, constant, stringLiteral, punctuator
 };
