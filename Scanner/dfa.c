@@ -66,3 +66,12 @@ int transition(struct dfa* cur, int let){
     }
     return 1;
 }
+
+void freeDfa(struct dfa* cur){
+    for(int i = 0; i < cur->numstates; i++){
+        struct state* iterator = cur->states + i;
+        free(iterator->transitions);
+    }
+    free(cur->states);
+    free(cur);
+}

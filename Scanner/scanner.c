@@ -4,24 +4,24 @@
 #include "states.h"
 #include "scan.h"
 
-int getNext(FILE* fp){
+int getNext(){
     int c;
     if (putback){
         c = putback;
         putback = 0;
         return c;
     }
-    c = fgetc(fp);
+    c = fgetc(input);
+    if(c == '\n'){
+        line++;
+    }
     return c;
 }
 
-int skip(FILE *fp){
-    int c = getNext(fp);
+int skip(){
+    int c = getNext(input);
     while(' ' == c || '\n' == c || '\f' == c || '\r' == c || '\t' == c){
-        if(c == '\n'){
-            line++;
-        }
-        c = getNext(fp);
+        c = getNext(input);
     }
     return c;
 }
@@ -57,35 +57,43 @@ int getChar(int ch){
     return OTHR;
 }
 
-void addToken(FILE* output, struct token* tok){
+void addToken(struct token* tok){
     fprintf(output, tok->print);
 }
 
-int scanIdn(FILE* input, struct dfa* idn){
-    idn->cur = 0;
+int scanDFA(struct dfa* dfa){
+    long pos = ftell(input);
+    fseek(copy, pos, SEEK_SET);
+    int c;
+    while(1){
+        c = getNext(copy);
+        if(transition(dfa, getChar(c))){
+            putback = c;
+            break;
+        }
+    }
+    if(isFinal(dfa, dfa->cur)){
+        dfa->cur = 0;
+        return 1;
+    }
+    dfa->cur = 0;
+    return 0;
 }
 
-int scanCnst(FILE* input, struct dfa* cnst){
-    cnst->cur = 0;
+int scanPunc(){
+    return 0;
 }
 
-int scanStr(FILE* input, struct dfa* str){
-    str->cur = 0;
-}
-
-int scanPunc(FILE* input){
-    
-}
-
-int scanKey(FILE* input){
-    
+int scanKey(){
+    return 0;
 }
 
 void error(){
     printf("Syntax error on line: %d", line);
+    exit(1);
 }
 
-void scan(FILE* input, FILE* output){
+void scan(){
     struct dfa* idn = makeDFA(2);
     addTrans(idn, 0, 1, UNDER);
     addTrans(idn, 0, 1, LET);
@@ -131,28 +139,58 @@ void scan(FILE* input, FILE* output){
             break;
         }
         putback = c;
-        int flag = 0;
+        int flag = 1;
+        struct token* tok = (struct token*)malloc(sizeof(struct token));
         switch(getChar(c)){
             case LET:
-                flag = scanKey(input);
-                if(!flag){
+                if(scanKey(input)){
+                    flag = 0;
+                    tok->token = keyword;
+                    tok->print = "KEYWORD ";
                     break;
                 }
             case UNDER:
-                flag = scanIdn(input, idn);
+                if(scanDFA(idn)){
+                    flag = 0;
+                    tok->token = identifier;
+                    tok->print = "IDENTIFIER ";
+                }
                 break;
             case QT:
-                flag = scanCnst(input, cnst);
+                if(scanDFA(cnst)){
+                    flag = 0;
+                    tok->token = constant;
+                    tok->print = "CONSTANT ";
+                }
+                break;
+            case DIG:
+                if(scanDFA(cnst)){
+                    flag = 0;
+                    tok->token = constant;
+                    tok->print = "CONSTANT ";
+                }
                 break;
             case DQ:
-                flag = scanStr(input, str);
+                if(scanDFA(str)){
+                    flag = 0;
+                    tok->token = stringLiteral;
+                    tok->print = "STRINGLITERAL ";
+                }
                 break;
             case OP:
-                flag = scanPunc(input);
+                if(scanPunc(input)){
+                    flag = 0;
+                    tok->token = punctuator;
+                    tok->print = "PUNCTUATOR ";
+                }
                 break;
         }
         if(flag){
             error();
         }
+        addToken(tok);
     }
+    freeDfa(idn);
+    freeDfa(cnst);
+    freeDfa(str);
 }

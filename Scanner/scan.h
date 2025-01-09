@@ -1,6 +1,10 @@
-int putback = 0;
+extern int putback;
 
-int line = 0;
+extern int line;
+
+extern FILE *input;
+extern FILE *output;
+extern FILE *copy;
 
 enum tokens{
     identifier, keyword, constant, stringLiteral, punctuator
@@ -14,3 +18,5 @@ struct token{
     int token;
     char* print;
 };
+
+void scan();

@@ -1,13 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "states.h"
+#include <string.h>
+#include "scan.h"
+
+int line = 1;
+int putback = 0;
+FILE* input;
+FILE* output;
+FILE* copy;
 
 int main(int argc, char *argv[]){
-    struct dfa* dfa1 = makeDFA(4);
-    printCurr(dfa1);
-    addTrans(dfa1, 0, 1, 3);
-    transition(dfa1, 3);
-    printCurr(dfa1);
-    makeFinal(dfa1, 1);
-    printCurr(dfa1);
+    input = fopen("./testfiles/4.txt", "r");
+    copy = fopen("./testfiles/4.txt", "r");
+    output = fopen("./testfiles/output.txt", "w");
+    scan();
 }

@@ -29,3 +29,5 @@ int getCurr(struct dfa* cur);
 void printCurr(struct dfa* cur);
 
 int transition(struct dfa* cur, int let);
+
+void freeDfa(struct dfa* cur);
