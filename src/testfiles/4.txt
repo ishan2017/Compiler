@@ -1,0 +1,2 @@
+str 'z' 20 "three" 20.2
+there are 20.2
